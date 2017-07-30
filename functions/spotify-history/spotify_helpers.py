@@ -6,20 +6,13 @@ import os
 import logging
 
 # set up logging
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
-
+logger = logging.getLogger('PySpotify')
 
 def fetch_token():
     """ reads the client oauth token from S3 """
-    logger.info("Reading Spotify OAuth token from S3.")
     bucket = os.environ["SPOTIFY_BUCKET_NAME"]
     path = os.getenv("SPOTIFY_BUCKET_PATH", "")
+    logger.info("Reading Spotify OAuth token from s3://%s/%s/token.json." % (bucket, path))
     s3 = boto3.client('s3')
     content_object = s3.get_object(Bucket=bucket, Key="%s/token.json" % path)
     file_content = content_object['Body'].read().decode('utf-8')

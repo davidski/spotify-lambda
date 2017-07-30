@@ -6,7 +6,7 @@ from requests_oauthlib import OAuth2Session
 import spotify_helpers as spot
 
 # set up logging
-logger = logging.getLogger()
+logger = logging.getLogger('PySpotify')
 logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)

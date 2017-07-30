@@ -7,13 +7,14 @@ import logging
 import spotify_helpers as spot
 
 # set up logging
-logger = logging.getLogger()
+logger = logging.getLogger('PySpotify')
 logger.setLevel(logging.INFO)
-ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-ch.setFormatter(formatter)
-logger.addHandler(ch)
+if not len(logger.handlers):
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
 
 def update_played_track_history(desired_date):
     """ update a day's current played history """
