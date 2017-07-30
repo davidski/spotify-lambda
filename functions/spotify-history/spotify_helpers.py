@@ -8,11 +8,13 @@ import logging
 # set up logging
 logger = logging.getLogger('PySpotify')
 
+
 def fetch_token():
     """ reads the client oauth token from S3 """
     bucket = os.environ["SPOTIFY_BUCKET_NAME"]
     path = os.getenv("SPOTIFY_BUCKET_PATH", "")
-    logger.info("Reading Spotify OAuth token from s3://%s/%s/token.json." % (bucket, path))
+    logger.info("Reading Spotify OAuth token from s3://%s/%s/token.json." %
+                (bucket, path))
     s3 = boto3.client('s3')
     content_object = s3.get_object(Bucket=bucket, Key="%s/token.json" % path)
     file_content = content_object['Body'].read().decode('utf-8')
@@ -38,10 +40,11 @@ def fetch_uri(uri):
     token_uri = 'https://accounts.spotify.com/api/token'
     client_id = os.getenv('SPOTIFY_CLIENT_ID')
     client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
+    extra = {'client_id': client_id, 'client_secret': client_secret}
 
     client = OAuth2Session(client_id, token=token,
                            auto_refresh_url=token_uri,
-                           auto_refresh_kwargs={'client_id': client_id, 'client_secret': client_secret},
+                           auto_refresh_kwargs=extra,
                            token_updater=save_token)
     r = client.get(uri)
 
@@ -62,14 +65,16 @@ def fetch_all_tracks(after):
 
 
 def read_s3_file(date):
-    """ retrieve a optionally present file of the day's play history from S3 """
+    """ retrieve an optionally present file of the day's play """
+    """ history from S3 """
     bucket = os.getenv("SPOTIFY_BUCKET_NAME")
     path = os.getenv("SPOTIFY_BUCKET_PATH")
     s3 = boto3.resource('s3')
     try:
         s3.Object(bucket, "%s/%s.json" % (path, date)).load()
     except botocore.exceptions.ClientError as e:
-        logger.info("No existing history file found for %s, %s" % (date, e.response['Error']['Code']))
+        logger.info("No existing history file found for %s, %s" %
+                    (date, e.response['Error']['Code']))
         if e.response['Error']['Code'] == '404':
             return []
     else:

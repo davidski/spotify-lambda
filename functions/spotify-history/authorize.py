@@ -10,7 +10,8 @@ logger = logging.getLogger('PySpotify')
 logger.setLevel(logging.INFO)
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('%(asctime)s - %(name)s - ' +
+                              '%(levelname)s - %(message)s')
 ch.setFormatter(formatter)
 logger.addHandler(ch)
 
@@ -34,7 +35,8 @@ if __name__ == "__main__":
                           scope=scope,
                           redirect_uri=redirect_uri)
 
-    authorization_url, state = oauth.authorization_url(request_authorization_url)
+    authorization_url, state = oauth.\
+        authorization_url(request_authorization_url)
 
     print('Go to %s and authorize access.' % authorization_url)
 
