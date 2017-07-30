@@ -1,11 +1,10 @@
 import os
 
 from requests_oauthlib import OAuth2Session
+import spotify_helpers as spot
 
-from functions import spotify_helpers as spot
-
-if __name__ == "main":
-    """ interactive authorizaton helper """
+if __name__ == "__main__":
+    """ interactive authorization helper """
     client_id = os.getenv('SPOTIFY_CLIENT_ID')
     client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
 
@@ -19,8 +18,7 @@ if __name__ == "main":
     request_authorization_url = "https://accounts.spotify.com/authorize"
     request_token_url = "https://accounts.spotify.com/api/token"
 
-
-    # Create our client.
+    # create our oauth client
     oauth = OAuth2Session(client_id=client_id,
                           scope=scope,
                           redirect_uri=redirect_uri)
@@ -29,11 +27,13 @@ if __name__ == "main":
 
     print('Go to %s and authorize access.' % authorization_url)
 
-    authorization_response = input('Psate the full returedn URL here: ')
+    authorization_response = input('Paste the full returned URL here: ')
+    print("Auth response URL: '%s'" % authorization_response)
 
     token = oauth.fetch_token(
         request_token_url,
         client_secret=client_secret,
         authorization_response=authorization_response)
 
+    bucket = os.getenv("SPOTIFY_BUCKET_NAME")
     spot.save_token(token)
