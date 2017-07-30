@@ -1,7 +1,18 @@
-import os
+#!/bin/env python
 
+import os
+import logging
 from requests_oauthlib import OAuth2Session
 import spotify_helpers as spot
+
+# set up logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
 
 if __name__ == "__main__":
     """ interactive authorization helper """

@@ -3,11 +3,23 @@ import boto3
 import botocore
 import json
 import os
+import logging
+
+# set up logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+logger.addHandler(ch)
+
 
 def fetch_token():
     """ reads the client oauth token from S3 """
-    bucket = os.getenv("SPOTIFY_BUCKET_NAME")
-    path = os.getenv("SPOTIFY_BUCKET_PATH")
+    logger.info("Reading Spotify OAuth token from S3.")
+    bucket = os.environ["SPOTIFY_BUCKET_NAME"]
+    path = os.getenv("SPOTIFY_BUCKET_PATH", "")
     s3 = boto3.client('s3')
     content_object = s3.get_object(Bucket=bucket, Key="%s/token.json" % path)
     file_content = content_object['Body'].read().decode('utf-8')
@@ -17,9 +29,9 @@ def fetch_token():
 
 def save_token(token):
     """ saves a client oauth token to S3 """
-    # print("Got a new token: %s!" % token)
-    bucket = os.getenv("SPOTIFY_BUCKET_NAME")
-    path = os.getenv("SPOTIFY_BUCKET_PATH")
+    logger.info("Saving token to S3.")
+    bucket = os.environ["SPOTIFY_BUCKET_NAME"]
+    path = os.getenv("SPOTIFY_BUCKET_PATH", "")
     s3 = boto3.client('s3')
     data = json.dumps(token)
     s3.put_object(Bucket=bucket, Key="%s/token.json" % path, Body=data)
@@ -28,6 +40,7 @@ def save_token(token):
 
 def fetch_uri(uri):
     """ fetch a oauth protected url """
+    logger.info("Working on uri: %s" % uri)
     token = fetch_token()
     token_uri = 'https://accounts.spotify.com/api/token'
     client_id = os.getenv('SPOTIFY_CLIENT_ID')
@@ -51,6 +64,7 @@ def fetch_all_tracks(after):
     while 'next' in data:
         data = fetch_uri(data['next'])
         tracks.extend(data['items'])
+    logger.info("Returning %s tracks." % len(tracks))
     return tracks
 
 
@@ -60,12 +74,14 @@ def read_s3_file(date):
     path = os.getenv("SPOTIFY_BUCKET_PATH")
     s3 = boto3.resource('s3')
     try:
-        s3.Object(bucket, "%s/%s" % (path, date)).load()
+        s3.Object(bucket, "%s/%s.json" % (path, date)).load()
     except botocore.exceptions.ClientError as e:
+        logger.info("No existing history file found for %s, %s" % (date, e.response['Error']['Code']))
         if e.response['Error']['Code'] == '404':
             return []
     else:
-        content_object = s3.Object(bucket, "%s/%s" % (path, date))
+        logger.info("Reading history file for %s" % date)
+        content_object = s3.Object(bucket, "%s/%s.json" % (path, date))
         file_content = content_object.get()['Body'].read().decode('utf-8')
         json_content = json.loads(file_content)
         return json_content
@@ -73,9 +89,9 @@ def read_s3_file(date):
 
 def write_s3_file(data, date):
     """ save the day's history file to S3 """
+    logger.info("Writing history file to S3.")
     bucket = os.getenv("SPOTIFY_BUCKET_NAME")
     path = os.getenv("SPOTIFY_BUCKET_PATH")
     s3 = boto3.client('s3')
-    print("Data is %s" % data)
     data = json.dumps(data)
     s3.put_object(Bucket=bucket, Key="%s/%s.json" % (path, date), Body=data)
