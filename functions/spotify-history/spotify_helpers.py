@@ -77,6 +77,9 @@ def read_s3_file(date):
                     (date, e.response['Error']['Code']))
         if e.response['Error']['Code'] == '404':
             return []
+        else:
+            logger.warning("Unexpected error code returned!")
+            return []
     else:
         logger.info("Reading history file for %s" % date)
         content_object = s3.Object(bucket, "%s/%s.json" % (path, date))
