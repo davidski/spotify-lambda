@@ -57,7 +57,7 @@ def fetch_all_tracks(after):
     tracks = []
     data = fetch_uri(endpoint_uri + "?after=%s" % after)
     tracks.extend(data['items'])
-    while 'next' in data:
+    while data['next'] is not None:
         data = fetch_uri(data['next'])
         tracks.extend(data['items'])
     logger.info("Returning %s tracks." % len(tracks))
