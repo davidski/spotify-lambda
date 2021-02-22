@@ -9,6 +9,6 @@ oauthlib==2.0.2
 python-dateutil==2.6.1
 requests==2.20.0
 requests-oauthlib==0.8.0
-s3transfer==0.1.10
+s3transfer==0.3.4
 six==1.10.0
 urllib3~=1.23
