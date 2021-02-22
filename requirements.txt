@@ -7,7 +7,7 @@ idna==3.1
 jmespath==0.9.3
 oauthlib==3.1.0
 python-dateutil==2.6.1
-requests==2.20.0
+requests==2.25.1
 requests-oauthlib==0.8.0
 s3transfer==0.3.4
 six==1.10.0
