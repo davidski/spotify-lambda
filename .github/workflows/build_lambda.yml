@@ -2,9 +2,9 @@ name: Lambda deployment
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: 
+      - main
+      - master
 
 jobs:
   build:
