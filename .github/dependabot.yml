@@ -5,5 +5,5 @@ updates:
     schedule:
       interval: "weekly"
       day: "sunday"
-    assignee:
+    assignees:
       - "davidski"
