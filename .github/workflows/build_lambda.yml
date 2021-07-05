@@ -22,21 +22,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
+    - name: Create ZIP
       run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        (cd package;zip -r spotify-history.zip ./*)
+        zip -gj package/spotify-history.zip functions/spotify-history/*.py
+        mv package/spotify-history.zip .
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
-    - name: Copy files to the test website with the AWS CLI
+    - name: Copy deployment ZIP to AWS
       run: |
-        aws s3 sync . s3://${{ secrets.BUCKET }}/${{ secrets.PATH }}
+        aws s3 cp spotify-history.zip s3://${{ secrets.DEPLOY_BUCKET }}/${{ secrets.DEPLOY_PATH }}
     - name: Send message to Slack API
       uses: archive/github-actions-slack@v1.1.0
       id: notify
