@@ -1,4 +1,4 @@
-﻿boto3==1.18.40
+﻿boto3==1.18.44
 certifi==2021.5.30
 chardet==4.0.0
 docutils==0.17.1
