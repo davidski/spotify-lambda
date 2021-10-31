@@ -1,7 +1,7 @@
 ﻿boto3==1.19.2
 certifi==2021.10.8
 chardet==4.0.0
-docutils==0.17.1
+docutils==0.18
 jmespath==0.10.0
 oauthlib==3.1.1
 python-dateutil==2.8.2
