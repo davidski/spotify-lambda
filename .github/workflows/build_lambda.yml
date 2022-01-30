@@ -41,4 +41,6 @@ jobs:
     - name: Copy deployment ZIP to AWS
       run: |
         aws s3 cp spotify-history.zip s3://${{ secrets.DEPLOY_BUCKET }}/${{ secrets.DEPLOY_PATH }}
-
+    - name: Update Lambda
+      run: |
+        aws lambda update-function-code --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} --s3-bucket ${{ secrets.DEPLOY_BUCKET}} --s3-key ${{ secrets.DEPLOY_PATH }}  > /dev/null
