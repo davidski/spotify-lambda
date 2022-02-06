@@ -1,6 +1,10 @@
 Spotify-History
 ================
 
+**NOTE**
+> I no longer use Spotify due to their support for [blatant, socially-harmfull, misinformation](https://www.nytimes.com/2022/01/31/technology/joe-rogan-spotify-controversy.html). 
+> This project is in hibernation mode as of February 2022 and is not likely to receive further updates.
+
 Python based AWS Lambda function for building an offline list of played 
 tracks from Spotify.
 
