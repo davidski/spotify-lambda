@@ -1,5 +1,5 @@
 ﻿boto3==1.21.9
-certifi==2021.10.8
+certifi==2022.6.15
 chardet==4.0.0
 docutils==0.18.1
 jmespath==0.10.0
